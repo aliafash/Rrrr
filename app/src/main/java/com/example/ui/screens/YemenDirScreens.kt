@@ -633,7 +633,7 @@ fun ProvidersListView(
             onDismiss = { showAddReviewDialog = null },
             onSubmit = { phone, stars, comment ->
                 viewModel.submitReview(
-                    providerId = showAddReviewDialog!!.id ?: 0,
+                    providerId = showAddReviewDialog!!.id ?: "",
                     phoneInput = phone,
                     ratingStars = stars,
                     commentText = comment,
@@ -1389,7 +1389,7 @@ fun CategoriesManageTab(viewModel: DaliliViewModel, primaryColor: Color, seconda
                 Button(
                     onClick = {
                         viewModel.deleteCategory(
-                            categoryId = deleteCategoryTarget?.id ?: 0,
+                            categoryId = deleteCategoryTarget?.id ?: "",
                             onSuccess = { deleteCategoryTarget = null },
                             onError = { Toast.makeText(context, it, Toast.LENGTH_LONG).show() }
                         )
@@ -1604,7 +1604,7 @@ fun ServiceProvidersManageTab(viewModel: DaliliViewModel, primaryColor: Color, s
                 Button(
                     onClick = {
                         viewModel.deleteServiceProvider(
-                            providerId = deleteProviderTarget?.id ?: 0,
+                            providerId = deleteProviderTarget?.id ?: "",
                             onSuccess = { deleteProviderTarget = null },
                             onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
                         )
@@ -1629,11 +1629,11 @@ fun ProviderEditDialog(
     categories: List<Category>,
     primaryColor: Color,
     onDismiss: () -> Unit,
-    onConfirm: (name: String, phone: String, categoryId: Int, active: Boolean, imgUrl: String) -> Unit
+    onConfirm: (name: String, phone: String, categoryId: String, active: Boolean, imgUrl: String) -> Unit
 ) {
     var name by remember { mutableStateOf(provider?.name ?: "") }
     var phone by remember { mutableStateOf(provider?.phone ?: "") }
-    var selectedCategoryId by remember { mutableStateOf(provider?.category_id ?: categories.firstOrNull()?.id ?: 0) }
+    var selectedCategoryId by remember { mutableStateOf(provider?.category_id ?: categories.firstOrNull()?.id ?: "") }
     var isActive by remember { mutableStateOf(provider?.is_active ?: true) }
     var imageUrl by remember { mutableStateOf(provider?.image_url ?: "") }
 
@@ -1686,7 +1686,7 @@ fun ProviderEditDialog(
                             DropdownMenuItem(
                                 text = { Text(category.name_ar) },
                                 onClick = {
-                                    selectedCategoryId = category.id ?: 0
+                                    selectedCategoryId = category.id ?: ""
                                     expandedMenu = false
                                 }
                             )
@@ -1888,7 +1888,7 @@ fun AdminsManageTab(viewModel: DaliliViewModel, primaryColor: Color, secondaryCo
                             onClick = {
                                 if (newPassword.trim().isNotEmpty()) {
                                     viewModel.editAdminPassword(
-                                        adminId = changePasswordAdminTarget?.id ?: 0,
+                                        adminId = changePasswordAdminTarget?.id ?: "",
                                         newPasswordHash = newPassword.trim(),
                                         onSuccess = { changePasswordAdminTarget = null },
                                         onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
@@ -1915,7 +1915,7 @@ fun AdminsManageTab(viewModel: DaliliViewModel, primaryColor: Color, secondaryCo
                 Button(
                     onClick = {
                         viewModel.deleteAdmin(
-                            adminId = deleteAdminTarget?.id ?: 0,
+                            adminId = deleteAdminTarget?.id ?: "",
                             onSuccess = { deleteAdminTarget = null },
                             onError = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() }
                         )
@@ -2047,7 +2047,7 @@ fun SecretSettingsTab(viewModel: DaliliViewModel, primaryColor: Color, secondary
                         val ownerAdmin = viewModel.admins.value.find { it.username == "admin" }
                         if (ownerAdmin != null) {
                             viewModel.editAdminPassword(
-                                adminId = ownerAdmin.id ?: 0,
+                                adminId = ownerAdmin.id ?: "",
                                 newPasswordHash = adminPasswordInput.trim(),
                                 onSuccess = {
                                     adminPasswordInput = ""

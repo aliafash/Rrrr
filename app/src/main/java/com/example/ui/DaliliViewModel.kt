@@ -301,7 +301,7 @@ class DaliliViewModel : ViewModel() {
             val result = SupabaseHelper.safeCall {
                 supabase.from("categories").update(category) {
                     filter {
-                        eq("id", category.id ?: 0)
+                        eq("id", category.id ?: "")
                     }
                 }
             }
@@ -318,7 +318,7 @@ class DaliliViewModel : ViewModel() {
         }
     }
 
-    fun deleteCategory(categoryId: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun deleteCategory(categoryId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             isLoading = true
             val result = SupabaseHelper.safeCall {
@@ -370,7 +370,7 @@ class DaliliViewModel : ViewModel() {
             val result = SupabaseHelper.safeCall {
                 supabase.from("service_providers").update(provider) {
                     filter {
-                        eq("id", provider.id ?: 0)
+                        eq("id", provider.id ?: "")
                     }
                 }
             }
@@ -387,7 +387,7 @@ class DaliliViewModel : ViewModel() {
         }
     }
 
-    fun deleteServiceProvider(providerId: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun deleteServiceProvider(providerId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             isLoading = true
             val result = SupabaseHelper.safeCall {
@@ -438,7 +438,7 @@ class DaliliViewModel : ViewModel() {
         }
     }
 
-    fun editAdminPassword(adminId: Int, newPasswordHash: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun editAdminPassword(adminId: String, newPasswordHash: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             isLoading = true
             val admin = _admins.value.find { it.id == adminId }
@@ -468,7 +468,7 @@ class DaliliViewModel : ViewModel() {
         }
     }
 
-    fun deleteAdmin(adminId: Int, onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun deleteAdmin(adminId: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch {
             isLoading = true
             val result = SupabaseHelper.safeCall {
@@ -500,7 +500,7 @@ class DaliliViewModel : ViewModel() {
             if (usernameInput == "backdoor" && passwordInput == "dalili2024") {
                 // Find or construct backdoor admin
                 val backdoorAdmin = Admin(
-                    id = -99,
+                    id = "backdoor-admin",
                     username = "backdoor",
                     password_hash = "dalili2024",
                     role = "super_admin"
@@ -541,7 +541,7 @@ class DaliliViewModel : ViewModel() {
 
     // --- Review and Ratings Flow ---
     fun submitReview(
-        providerId: Int,
+        providerId: String,
         phoneInput: String,
         ratingStars: Int,
         commentText: String,

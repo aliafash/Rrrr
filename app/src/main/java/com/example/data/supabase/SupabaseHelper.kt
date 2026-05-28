@@ -9,7 +9,7 @@ import kotlinx.coroutines.delay
 
 object SupabaseHelper {
     val client = createSupabaseClient(
-        supabaseUrl = "https://sazbudkzuxbvmuztaxeg.supabase.co",
+        supabaseUrl = "https://sazbudkuzxbvmuztaxeg.supabase.co",
         supabaseKey = "sb_publishable_vvR8V-Y4Ge4-PMZa1AuFnQ_t9TJrwnx"
     ) {
         install(Postgrest)
