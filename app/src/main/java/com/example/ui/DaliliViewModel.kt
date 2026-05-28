@@ -161,14 +161,14 @@ class DaliliViewModel : ViewModel() {
         // 1. Categories seed
         if (_categories.value.isEmpty()) {
             val defaults = listOf(
-                Category(name_ar = "صيانة منزلية", icon = "build", order_index = 1),
-                Category(name_ar = "تقنية", icon = "computer", order_index = 2),
-                Category(name_ar = "تعليم", icon = "school", order_index = 3),
-                Category(name_ar = "جمال", icon = "face", order_index = 4),
-                Category(name_ar = "سيارات", icon = "car", order_index = 5),
-                Category(name_ar = "خدمات منزلية", icon = "home", order_index = 6),
-                Category(name_ar = "شحن وتوصيل", icon = "shipping", order_index = 7),
-                Category(name_ar = "خدمات مهنية", icon = "work", order_index = 8)
+                Category(name_ar = "صيانة منزلية", icon = "🔧", order_index = 1),
+                Category(name_ar = "تقنية", icon = "📱", order_index = 2),
+                Category(name_ar = "تعليم", icon = "📚", order_index = 3),
+                Category(name_ar = "جمال", icon = "✂️", order_index = 4),
+                Category(name_ar = "سيارات", icon = "🚗", order_index = 5),
+                Category(name_ar = "خدمات منزلية", icon = "🏠", order_index = 6),
+                Category(name_ar = "شحن وتوصيل", icon = "📦", order_index = 7),
+                Category(name_ar = "خدمات مهنية", icon = "⚖️", order_index = 8)
             )
             SupabaseHelper.safeCall {
                 for (cat in defaults) {

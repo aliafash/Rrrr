@@ -83,6 +83,36 @@ fun getCoreCategoryIcon(iconName: String?): ImageVector {
     }
 }
 
+fun isEmojiIcon(iconName: String?): Boolean {
+    if (iconName.isNullOrEmpty()) return false
+    val firstCode = iconName.codePointAt(0)
+    return firstCode > 127 || iconName.trim().length in 1..2
+}
+
+@Composable
+fun CategoryIconView(
+    iconName: String?,
+    contentDescription: String?,
+    tint: Color,
+    size: androidx.compose.ui.unit.Dp,
+    fontSize: androidx.compose.ui.unit.TextUnit = 24.sp
+) {
+    if (isEmojiIcon(iconName)) {
+        Text(
+            text = iconName ?: "",
+            fontSize = fontSize,
+            textAlign = TextAlign.Center
+        )
+    } else {
+        Icon(
+            imageVector = getCoreCategoryIcon(iconName),
+            contentDescription = contentDescription,
+            tint = tint,
+            modifier = Modifier.size(size)
+        )
+    }
+}
+
 // Available standard icons for selections
 val AVAILABLE_ICONS = listOf("build", "computer", "school", "face", "car", "home", "shipping", "work")
 
@@ -291,11 +321,13 @@ fun MainCatalogView(
     onProfileClick: () -> Unit
 ) {
     val categoriesState by viewModel.categories.collectAsState()
+    val providersState by viewModel.serviceProviders.collectAsState()
     val scope = rememberCoroutineScope()
 
-    // Filter categories based on search input
-    val filteredCategories = categoriesState.filter {
-        it.name_ar.contains(viewModel.searchQuery, ignoreCase = true)
+    // Filter categories based on search input of category names or service provider names
+    val filteredCategories = categoriesState.filter { cat ->
+        cat.name_ar.contains(viewModel.searchQuery, ignoreCase = true) ||
+        providersState.any { prov -> prov.category_id == cat.id && prov.name.contains(viewModel.searchQuery, ignoreCase = true) }
     }
 
     Column(
@@ -411,7 +443,7 @@ fun MainCatalogView(
             }
         } else {
             LazyVerticalGrid(
-                columns = GridCells.Adaptive(minSize = 140.dp),
+                columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(12.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -457,11 +489,11 @@ fun CategoryCardItem(category: Category, primaryColor: Color, secondaryColor: Co
                     .border(2.dp, secondaryColor, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = getCoreCategoryIcon(category.icon),
+                CategoryIconView(
+                    iconName = category.icon,
                     contentDescription = category.name_ar,
                     tint = secondaryColor,
-                    modifier = Modifier.size(28.dp)
+                    size = 28.dp
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -1288,7 +1320,13 @@ fun CategoriesManageTab(viewModel: DaliliViewModel, primaryColor: Color, seconda
                                     .background(primaryColor),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(imageVector = getCoreCategoryIcon(category.icon), contentDescription = null, tint = secondaryColor, modifier = Modifier.size(18.dp))
+                                CategoryIconView(
+                                    iconName = category.icon,
+                                    contentDescription = null,
+                                    tint = secondaryColor,
+                                    size = 18.dp,
+                                    fontSize = 16.sp
+                                )
                             }
                             Spacer(modifier = Modifier.width(10.dp))
                             Column {
@@ -1398,7 +1436,7 @@ fun CategoryEditDialog(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 // Icon selection
-                Text("اختر أيقونة للقسم:", fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                Text("اختر أو اكتب أيقونة (إيموجي أو نص) للقسم:", fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -1412,6 +1450,15 @@ fun CategoryEditDialog(
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(6.dp))
+                OutlinedTextField(
+                    value = iconName,
+                    onValueChange = { iconName = it },
+                    label = { Text("أو اكتب رمز إيموجي (Emoji) مخصص") },
+                    singleLine = true,
+                    colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = primaryColor),
+                    modifier = Modifier.fillMaxWidth().testTag("category_icon_input")
+                )
                 Spacer(modifier = Modifier.height(10.dp))
 
                 OutlinedTextField(
